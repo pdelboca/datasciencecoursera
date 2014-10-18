@@ -1,15 +1,6 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Pair of functions that cache the inverse of a matrix.
 
 ## This function creates a special "matrix" object that can cache its inverse.
-# Create a list containing:
-# inverse value /
-# and 4 functions: 
-# set original matrix and reset inverse /
-# get original matrix /
-# set inverse matrix
-# get inverse value
-
 makeCacheMatrix <- function(matrix = matrix()) {
     # store inverse value
     inverse <- NULL
@@ -25,7 +16,7 @@ makeCacheMatrix <- function(matrix = matrix()) {
     # get inverse value
     get_inverse <- function() inverse
     
-    # Returns a list of the 4 functions, this is the special "matrix"
+    # Returns a list of the 4 functions, this list is the special "matrix"
     list(set = set, get = get,
          set_inverse = set_inverse,
          get_inverse = get_inverse)
