@@ -38,8 +38,8 @@ corr <- function(directory, threshold = 0) {
 
 # >============== TEST SCENARIOS ==============<
 
-source("corr.R")
-source("complete.R")
+#source("corr.R")
+#source("complete.R")
 cr <- corr("specdata", 150)
 head(cr)
 ## [1] -0.01896 -0.14051 -0.04390 -0.06816 -0.12351 -0.07589
