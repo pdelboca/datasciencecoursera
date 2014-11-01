@@ -113,3 +113,41 @@ Execution of 'ls' will suspend at the beginning of the function and you will be 
 #You will be prompted to specify at which line of the function you would like to suspend execution and enter the browser.
 #Execution of the 'ls' function will suspend at the 4th line of the function and you will be in the browser.
 #The 'ls' function will return an error.
+
+#>============== QUIZ WEEK5 ================<
+# Question 1:
+# What is produced at the end of this snippet of R code?
+# set.seed(1)
+# rpois(5,2)
+# After set.seed(1), always same numbers -> reproducibility
+set.seed(1)
+rpois(5,2)
+rpois(5,2)
+rpois(5,2)
+set.seed(2)
+rpois(5,2)
+rpois(5,2)
+set.seed(1)
+rpois(5,2)
+
+
+# Question 5
+set.seed(10)
+x <- rbinom(10,10,0.5)
+x
+e <- rnorm(10,0,20)
+e
+y <- 0.5 + 2 * x + e
+y
+
+plot(x,y)
+
+
+# Question 8
+x1 <- rnorm(10,0,20)
+x2 <- 0.5 + 2 * x
+library(datasets)
+Rprof()
+fit <- lm(y ~ x1 + x2)
+Rprof(NULL)
+summaryRprof()
