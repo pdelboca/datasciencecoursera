@@ -1,4 +1,3 @@
-setwd("/home/pdelboca/Repos//datasciencecoursera/r-programming/assignment 3/")
 data_dir ="./rprog-data-ProgAssignment3-data/"
 
 library(datasets) # to test valid states
