@@ -4,7 +4,6 @@ library(datasets) # to test valid states
 
 file_path <- function(...){paste(data_dir,...,sep = "/")}
 valid_outcomes <- c("heart attack", "heart failure", "pneumonia")
-library(dplyr)
 
 rankhospital <- function(state,outcome,rank){
     ## Check that state and outcome are valid
