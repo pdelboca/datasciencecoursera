@@ -21,6 +21,9 @@ names(totals) <- c("Year","Emissions")
 # Plot
 library(ggplot2)
 png("plot5.png",width = 550)
-ggplot(totals, aes(Year,Emissions)) + geom_line() + 
-    labs(title = "Emissions from motor vehicle sources from 1999–2008 in Baltimore City")
+ggplot(totals, aes(Year,Emissions)) + 
+    geom_point(colour = "blue", size = 3) +
+    geom_line(colour = "blue") + 
+    labs(title = "Emissions from motor vehicle sources from 1999–2008 in Baltimore City") +
+    theme_minimal()
 dev.off()

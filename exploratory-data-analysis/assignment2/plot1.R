@@ -13,8 +13,10 @@ names(totals) <- c("Year", "Emissions")
 # Plot data
 png("plot1.png")
 barplot(totals$Emissions, 
-     main = "Total PM2.5 Emission per Year",
-     names.arg = totals$Year,
-     xlab = "Year",
-     ylab = "Total PM2.5 Emission")
+        col = "lightblue",
+        border = FALSE,
+        main = "Total PM2.5 Emission per Year",
+        names.arg = totals$Year,
+        xlab = "Year",
+        ylab = "Total PM2.5 Emission")
 dev.off()

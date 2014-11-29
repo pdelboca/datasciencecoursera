@@ -19,8 +19,15 @@ names(totals) <- c("type","year","Emission")
 # Plot
 library(ggplot2)
 png("plot3.png")
-ggplot(totals, aes(year, Emission,group=type)) + geom_line(aes(color=type)) +
+ggplot(totals, aes(year, Emission)) + 
+    geom_point(aes(color=type)) + 
+    geom_line(aes(color=type)) +
     labs(title = "Emission Totals in Baltimore City by Type and Year",
          x = "Year",
-         y = "Total Emission")
+         y = "Total Emission") +
+    theme_minimal()
+
+# ggplot(totals) + geom_bar(aes(x = year, y=Emission, fill = type),stat = "identity") +
+#    facet_grid(~ type)
+
 dev.off()

@@ -15,7 +15,10 @@ names(totals) <- c("Year", "Emissions")
 
 # Plot
 png("plot4.png", width = 700)
-ggplot(totals, aes(Year,Emissions)) + geom_line() + 
+ggplot(totals, aes(Year,Emissions)) + 
+    geom_point(colour = "blue" ,size = 3) +
+    geom_line(colour = "blue") + 
     labs(title = "Emissions from coal combustion-related sources across the United States",
-         y = "Total PM2.5 Emissions")
+         y = "Total PM2.5 Emissions") +
+    theme_minimal()
 dev.off()
