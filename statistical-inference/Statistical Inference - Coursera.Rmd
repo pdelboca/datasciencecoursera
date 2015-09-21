@@ -1,0 +1,93 @@
+---
+title: "Statistical Inference - Coursera"
+author: "Patricio Del Boca"
+date: "21/09/2015"
+output: html_document
+#For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+---
+### Overview: 
+In this project I will investigate the exponential distribution in R and compare it with the Central Limit Theorem. **I will investigate the distribution of averages of 40 exponentials by doing 1000 simulations.**
+
+### Simulations:
+The exponential distribution can be simulated in R with **rexp(n, lambda)** where lambda is the rate parameter. I will set lambda = 0.2 for all of the simulations.
+
+```{r}
+lambda <- 0.2
+n <- 40
+simulations <- 1000
+```
+
+```{r}
+x <- rexp(n, rate = lambda)
+title <- sprintf("Distribution of %g exponential values with lambda %g", n, lambda)
+hist(x, breaks = 20, main = title)
+```
+### Sample Mean versus Theoretical Mean: 
+
+Theoretical Mean should be equal to Empirical Mean as the sample size trends to infinity. Empirical Mean should be more accurate as the size of the sample increases.
+
+With sample size equals 40:
+```{r}
+theoreticalMean <- 1 / lambda
+empiricalMean <- mean(x)
+sprintf("Theoretical Mean: %g - Empirical Mean: %g", theoreticalMean, empiricalMean)
+```
+
+How much varies the mean and the (Theoretical Mean - Empirical Mean) as the size of the sample increases?
+
+```{r}
+sampleSizes <- seq(100, 100000, 100)
+
+means <- NULL
+for (i in 1:length(sampleSizes)){
+    thisMean <- mean(rexp(sampleSizes[i], rate = lambda))
+    means <- c(means, thisMean)
+}
+title <- sprintf("Empirical Mean vs Theoretical Mean \n as sample size increases")
+xlab = "Sample Size"
+ylab = "Empirical Mean"
+plot(x = sampleSizes, y = means, type='l', main=title, xlab = xlab, ylab = ylab)
+abline(h=theoreticalMean, col = "red")
+```
+
+### Sample Variance versus Theoretical Variance: 
+
+Include figures (output from R) with titles. Highlight the variances you are comparing. Include text that explains your understanding of the differences of the variances.
+```{r}
+theoreticalSD <- 1 / lambda
+empiricalSD <- sd(x)
+sprintf("Theoretical SD: %g - Empirical SD: %g", theoreticalSD, empiricalSD)
+```
+How much varies the Standard Deviation and the error (Theoretical SD - Empirical SD) as the size of the sample increases?
+
+```{r}
+sds <- NULL
+for (i in 1:length(sampleSizes)){
+    thisSD <- sd(rexp(sampleSizes[i], rate = lambda))
+    sd <- c(sds, thisSD)
+}
+title <- sprintf("Empirical SD vs Theoretical SD \n as sample size increases")
+xlab = "Sample Size"
+ylab = "Empirical Mean"
+plot(x = sampleSizes, y = means, type='l', main=title, xlab = xlab, ylab = ylab)
+abline(h=theoreticalSD, col = "red")
+```
+
+
+### Distribution: 
+
+Via figures and text, explain how one can tell the distribution is approximately normal.
+
+Now I need simulate a thousand times, and for each simulation extract the mean.
+
+```{r}
+means <- NULL
+
+for(i in 1:simulations){
+    x <- rexp(n, rate = lambda)
+    means <- (c(means, mean(x)))
+}
+title <- sprintf("Distribution of Sample Means for %g simulations \n using %g exponential values with lambda %g", simulations, n, lambda)
+hist(means, breaks = 20, main = title)
+
+```
