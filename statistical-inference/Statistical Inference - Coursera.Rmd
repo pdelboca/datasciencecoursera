@@ -2,8 +2,7 @@
 title: "Statistical Inference - Coursera"
 author: "Patricio Del Boca"
 date: "21/09/2015"
-output: html_document
-#For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+output: pdf_document
 ---
 ### Overview: 
 In this project I will investigate the exponential distribution in R and compare it with the Central Limit Theorem. **I will investigate the distribution of averages of 40 exponentials by doing 1000 simulations.**
@@ -12,6 +11,7 @@ In this project I will investigate the exponential distribution in R and compare
 The exponential distribution can be simulated in R with **rexp(n, lambda)** where lambda is the rate parameter. I will set lambda = 0.2 for all of the simulations.
 
 ```{r}
+set.seed(31415)
 lambda <- 0.2
 n <- 40
 simulations <- 1000
@@ -22,6 +22,7 @@ x <- rexp(n, rate = lambda)
 title <- sprintf("Distribution of %g exponential values with lambda %g", n, lambda)
 hist(x, breaks = 20, main = title)
 ```
+
 ### Sample Mean versus Theoretical Mean: 
 
 Theoretical Mean should be equal to Empirical Mean as the sample size trends to infinity. Empirical Mean should be more accurate as the size of the sample increases.
@@ -30,7 +31,7 @@ With sample size equals 40:
 ```{r}
 theoreticalMean <- 1 / lambda
 empiricalMean <- mean(x)
-sprintf("Theoretical Mean: %g - Empirical Mean: %g", theoreticalMean, empiricalMean)
+sprintf("Theoretical Mean: %g - Empirical Mean with n=40: %g", theoreticalMean, empiricalMean)
 ```
 
 How much varies the mean and the (Theoretical Mean - Empirical Mean) as the size of the sample increases?
@@ -46,18 +47,25 @@ for (i in 1:length(sampleSizes)){
 title <- sprintf("Empirical Mean vs Theoretical Mean \n as sample size increases")
 xlab = "Sample Size"
 ylab = "Empirical Mean"
+options(scipen = 20) # Remove scientific notation on x axis.
 plot(x = sampleSizes, y = means, type='l', main=title, xlab = xlab, ylab = ylab)
 abline(h=theoreticalMean, col = "red")
+
 ```
 
 ### Sample Variance versus Theoretical Variance: 
 
-Include figures (output from R) with titles. Highlight the variances you are comparing. Include text that explains your understanding of the differences of the variances.
+I will compare Standard Deviation since is most easy to understand due that it is in the same order of magnitude than de variable.
+
+The estimate (sd) behaves like the mean, it increases its accuracy as n trends to
+infinity.
+
 ```{r}
 theoreticalSD <- 1 / lambda
 empiricalSD <- sd(x)
-sprintf("Theoretical SD: %g - Empirical SD: %g", theoreticalSD, empiricalSD)
+sprintf("Theoretical SD: %g - Empirical SD with n=40: %g", theoreticalSD, empiricalSD)
 ```
+
 How much varies the Standard Deviation and the error (Theoretical SD - Empirical SD) as the size of the sample increases?
 
 ```{r}
@@ -69,16 +77,16 @@ for (i in 1:length(sampleSizes)){
 title <- sprintf("Empirical SD vs Theoretical SD \n as sample size increases")
 xlab = "Sample Size"
 ylab = "Empirical Mean"
+options(scipen = 20) # Remove scientific notation on x axis.
 plot(x = sampleSizes, y = means, type='l', main=title, xlab = xlab, ylab = ylab)
 abline(h=theoreticalSD, col = "red")
 ```
 
 
 ### Distribution: 
-
-Via figures and text, explain how one can tell the distribution is approximately normal.
-
-Now I need simulate a thousand times, and for each simulation extract the mean.
+Now I will simulate a thousand times, and for each simulation extract the mean. 
+The plot of the means distribution should be "gaussian" as the CLT exposes. Let's
+plot the distribution of a thousands means.
 
 ```{r}
 means <- NULL
@@ -89,5 +97,18 @@ for(i in 1:simulations){
 }
 title <- sprintf("Distribution of Sample Means for %g simulations \n using %g exponential values with lambda %g", simulations, n, lambda)
 hist(means, breaks = 20, main = title)
-
 ```
+
+The distribution looks gaussian and it gets more gaussian as the sample size 
+increases. This demonstrate in an empirical way the CLT. Also qqplot are used
+to compare sample distributions with a normal distribution. If the qqplot draws 
+a straight line it can be said that the distribution of the sample is normal.
+
+```{r}
+qqnorm(means)
+qqline(means)
+```
+
+The normal Q-Q Plot also shows that the distribution of the samples means has a 
+normal distribution. (CLT)
+
