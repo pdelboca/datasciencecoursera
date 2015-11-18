@@ -67,10 +67,9 @@ for(i in 1:10){
     ss <- sample(1:dim(airquality)[1], replace=TRUE)
     airqualityTemp <- airquality[ss,]
     airqualityTemp <- airqualityTemp[order(airqualityTemp$Ozone), ]
-    loessTemp <- loess(Temp ~ Ozone, data = airqualityTemp, span=0.1)
+    loessTemp <- loess(Temp ~ Ozone, data = airqualityTemp, span=0.2)
     pred <- predict(loessTemp, newdata=data.frame("Ozone" = 1:155))
     ll[i, ] <- pred
-    print(summary(pred))
 }
 
 plot(airquality$Ozone, airquality$Temp, pch=19, cex=0.5)
