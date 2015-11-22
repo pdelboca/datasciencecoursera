@@ -1,0 +1,115 @@
+---
+title: "Tooth Growth Data Analysis"
+author: "Patricio Del Boca"
+date: "27/09/2015"
+output: pdf_document
+---
+
+## Overview
+
+ - Load the ToothGrowth data and perform some basic exploratory data analyses 
+ - Provide a basic summary of the data.
+ - Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+ - State your conclusions and the assumptions needed for your conclusions.
+
+## Load Data
+
+```{r}
+library(ggplot2)
+library(datasets)
+require(graphics)
+data(ToothGrowth)
+toothGrowth <- ToothGrowth 
+toothGrowth$dose <- as.factor(toothGrowth$dose) # convert to factor
+summary(toothGrowth)
+```
+
+## Exploratory Data Analysis
+
+Number of observations for each treatment/experiment. Total guinea pigs = 60:
+```{r}
+table(toothGrowth$supp, toothGrowth$dose)
+```
+
+Some plots to explore data:
+```{r}
+ggplot(data=toothGrowth, aes(x=supp,y=len,fill=supp)) +
+  geom_boxplot() +
+  ggtitle("Tooth Length by Supplement applied.")
+```
+
+```{r}
+ggplot(data=toothGrowth, aes(x=dose,y=len,fill=dose)) +
+  geom_boxplot() + 
+  facet_grid(.~supp) + 
+    ggtitle("Tooth Length by Suplement Type and Dose (in milligrams/day.)")
+```
+
+```{r}
+ggplot(data=toothGrowth, aes(x=dose,y=len,fill=dose)) +
+  geom_boxplot() +
+    ggtitle("Tooth Length by Dose (in milligrams/day)")
+
+```
+
+```{r}
+coplot(len ~ dose | supp, data = ToothGrowth, panel = panel.smooth,
+       xlab = "ToothGrowth data: length vs dose, given type of supplement")
+```
+
+In the grafic we can see that the difference is substantial when dosages 
+are 0.5 and 1.0 respectively. However, when dosage is 2.0 there isn't a difference.
+Let's perform a T Test to corroborate this hipotesis.
+
+## Tests:
+I will perform T Test for each subset of data separated by dosages
+
+#### Assumptions:
+ - Samples are both unpaired and unequal variances.
+ - There aren't other cofounding factors
+ - All the guinea pigs have the same diet, size, care, etc
+
+```{r}
+d0.5 <- toothGrowth[toothGrowth$dose == 0.5, ]
+d1.0 <- toothGrowth[toothGrowth$dose == 1.0, ]
+d2.0 <- toothGrowth[toothGrowth$dose == 2.0, ]
+```
+
+```{r}
+test0.5 <- t.test(len ~ supp, paired = FALSE, var.equal = FALSE, data = d0.5)
+p0.5 <- test0.5$p.value
+ci0.5 <- test0.5$conf
+```
+
+```{r, echo=FALSE}
+sprintf("P Value for Dose = 0.5: %g", p0.5)
+sprintf("Confidence Interval for Dose = 0.5: %g", ci0.5)
+```
+
+```{r}
+test1.0 <- t.test(len ~ supp, paired = FALSE, var.equal = FALSE, data = d1.0)
+p1.0 <- test1.0$p.value
+ci1.0 <- test1.0$conf
+```
+
+```{r, echo=FALSE}
+sprintf("P Value for Dose = 1.0: %g", p1.0)
+sprintf("Confidence Interval for Dose = 1.0: %g", ci1.0)
+
+```
+
+```{r}
+test2.0 <- t.test(len ~ supp, paired = FALSE, var.equal = FALSE, data = d2.0)
+p2.0 <- test2.0$p.value
+ci2.0 <- test2.0$conf
+```
+
+```{r, echo=FALSE}
+sprintf("P Value for Dose = 2.0: %g", p2.0)
+sprintf("Confidence Interval for Dose = 2.0: %g", ci2.0)
+```
+
+## Conclusions
+P-values are lower than 0.05 for dose 0.5 and 1.0 but greater than for 2.0.
+We can say the supplements have different effecs for dosages 0.5 and 1.0 but 
+there isn't enought evidence to claim so when the dossage is 2.0. 

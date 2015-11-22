@@ -1,0 +1,127 @@
+---
+title: "Regression Models"
+author: "Patricio Del Boca"
+date: "24/10/2015"
+output: pdf_document
+---
+# Executive Summary
+
+The objective of this document is looking at a data set of a collection of cars, and explore the relationship between a set of variables and miles per gallon (MPG) (outcome).
+
+There is a particular interest in the following two questions:
+
+ - Is an automatic or manual transmission better for MPG
+ - Quantify the MPG difference between automatic and manual transmissions
+
+Key takeaways:
+
+ - Regarding the first question: Manual Transmissions are better for MPG.
+ - Regarding the second question: Manual transmission are better by a factor of 1.8. Also, the means of MPG are better by 7.25.
+
+## Data Analysis
+
+At first glance, it seems that Manual Transmission cars have higher MPG than 
+Automatic cars. Let's try to quantify it. For code reference and graphics got to the **Appendix Section**, Plot 1.
+
+## Linear Model
+```{r, results='hold'}
+fit <- lm(mpg ~ am, data = mtcars)
+summary(fit)$coefficients
+summary(fit)$r.squared
+```
+
+#### Conclussions:
+ - The **average of Automatinc Transmissions MPG** is 17.14.
+ - The **difference in the empirical mean between Manual and Automatic MPG** is 7.24.
+ - Is Automatic different from Manual? The 0.0002 p-value (less than 0.05) is actually saying that **there is a statistical difference in MPG between cars with Automatic and Manual Transmission**.
+ -  The R Squared value tells us that **only 36% of the variability in MPG values is explained by the Transmission**.
+
+\newpage
+
+## Multivariate Linear Model
+
+```{r, results='hold'}
+fullModel <- lm(mpg ~ ., data=mtcars)
+summary(fullModel)$adj.r.squared
+sum(summary(fullModel)$coef[,4] < 0.05)
+```
+
+Although the Adjusted R-squared is 0.77, there aren't good predictors since none of the p-values are lower than 0.05. For more details on coefficients check **Appendix: Full Model Coefficients**.
+
+```{r, results='hide'}
+stepModel <- step(fullModel, k=log(nrow(mtcars)))
+```
+```{r, results='hold'}
+summary(stepModel)$coefficients
+summary(stepModel)$r.squared
+```
+
+Much better! The variables **(wt + qsec + am)** can explain the 85% of the 
+variability in MPG values. Also, all the coefficients are statistically 
+signifficant and also suggest that **wt** is the most explanatory variable.
+
+## Residuals Analysis
+For details on the plot check **Apendix: Residuals Plot**.
+
+- **Residuals vs. Fitted:** Shows no consistent pattern, it supports the accuracy of the independence assumption. Also, no other patterns are recognized (exponential, sinusoidal) son no further exploration is suggested
+- **Normal Q-Q:** The residuals are normally distributed because the points are closely to the line. the further from the mean, the more distributed the points are.
+- **Scale-Location:** confirms the constant variance assumption, as the points are randomly distributed.
+- **Residuals vs. Leverage:** that no outliers are present, as all values fall well within the 0.5 bands. 
+
+## Inference
+
+Assuming that cars with Manual and Automatic Transmission are from the same population as the Null Hypothesis, the p-value of 0.00137 reject it. So, the automatic and manual transmissions are from different populations.
+
+\newpage
+
+## Apendix 
+
+Data Loading and Summarization:
+
+```{r, results='hold'}
+data(mtcars)
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$vs <- factor(mtcars$vs)
+mtcars$am <- factor(mtcars$am)
+levels(mtcars$am) <- c("Automatic", "Manual")
+mtcars$gear <- factor(mtcars$gear)
+mtcars$carb <- factor(mtcars$carb)
+summary(mtcars$mpg)
+table(mtcars$am)
+```
+
+Plot 1: MPG by Transmission Boxplot
+
+```{r}
+library(ggplot2)
+g <- ggplot(mtcars, aes(x=am,y=mpg, fill=am)) + geom_boxplot()
+g <- g + xlab("Transmission") + ylab("Miles per Galon")
+g <- g + ggtitle("Miles Per Galon by Transmission \n (Plot 1)")
+g
+```
+
+Full Model Coeficients
+
+```{r}
+summary(fullModel)$coef
+```
+
+How do we interpret the p-values?
+
+- A predictor that has a **low p-value** is likely to be a meaningful addition to our model because changes in the predictor's value are related to changes in
+the response variable.
+ - A **larger p-value** suggests that changes in the predictor are
+not associated with changes in the response.
+
+\newpage
+Residuals Plot:
+```{r}
+plot(stepModel)
+```
+
+Inference
+```{r}
+result <- t.test(mtcars$mpg ~ mtcars$am)
+result$p.value
+result$estimate
+```
