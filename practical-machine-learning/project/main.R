@@ -5,6 +5,8 @@ library(reshape2)
 setwd("~/Repos/datasciencecoursera/practical-machine-learning/project")
 
 # Get Data
+# To be reproducible, there is code to donwload the data.
+
 trainUrl <-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
 testUrl <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
 trainFile <- "./data/pml-training.csv"
@@ -22,6 +24,9 @@ trainingRaw <- read.csv('./data//pml-training.csv')
 testingRaw <- read.csv('./data//pml-testing.csv')
 
 # Clean Data
+# Since both files has the same structure, Ive created a function to clean the 
+# data and keep the code DRY.
+
 cleanData <- function(dataset){
     dataset <- dataset[, colSums(is.na(dataset)) == 0]
     dataset <- dataset[, !grepl("timestamp", colnames(dataset))]
@@ -35,18 +40,28 @@ cleanData <- function(dataset){
 }
 
 training <- cleanData(trainingRaw)
-sum(!complete.cases(training))
+sum(!complete.cases(training)) # Check if all rows are completed
 testing <- cleanData(testingRaw)
-sum(!complete.cases(testing))
+sum(!complete.cases(testing)) # Check if all rows are completed
+# Exploratory Data Analysis
+# The data seems to be ready to be used to train a model. From the PCA analysis
+# we can conclude that the classes seems separable without further 
+# pre-processing. Check appendix for detailed graphs.
+
 
 # Train Model
+# I will use Random Forest since it is a straight forward method to tackle 
+# classification problems. To avoid overfitting I will use a cross validation
+# method with k = 7. Why 7? Because I like the number ;).
 
+fit <- train(classe ~ ., method="rf", data=training)
 
 # Apendix
 # Principal Component Analysis
 preProc <- preProcess(training, method="pca", pcaComp = 2)
 pca <- predict(preProc, training)
 ggplot(pca, aes(x=PC1, y=PC2,colour=classe)) + geom_point()
+
 pca$user_name <- trainingRaw$user_name 
 ggplot(pca, aes(x=PC1, y=PC2,colour=user_name)) + geom_point()
 

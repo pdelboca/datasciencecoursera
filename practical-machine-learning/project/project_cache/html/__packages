@@ -1,0 +1,9 @@
+base
+ggplot2
+lattice
+caret
+reshape2
+foreach
+iterators
+doMC
+randomForest
